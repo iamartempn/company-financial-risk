@@ -1,0 +1,36 @@
+name: Scheduled commit
+
+on:
+  schedule:
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply-patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Configure git
+        run: |
+          git config user.name "Artem Pogosyan"
+          git config user.email "iamartempn@yandex.ru"
+
+      - name: Apply next patch
+        id: apply
+        run: python .scheduled/apply_next.py
+
+      - name: Push changes
+        if: steps.apply.outputs.pushed == 'true'
+        run: git push

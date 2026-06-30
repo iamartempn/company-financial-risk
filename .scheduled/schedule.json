@@ -1,0 +1,36 @@
+[
+  {
+    "patch_dir": "01",
+    "date": "2026-07-05",
+    "message": "feat: add k-fold cross-validation to model training",
+    "files": [{"src": "src/model.py", "dst": "src/model.py"}]
+  },
+  {
+    "patch_dir": "02",
+    "date": "2026-07-17",
+    "message": "feat: SHAP waterfall plot for individual company in dashboard",
+    "files": [{"src": "src/app.py", "dst": "src/app.py"}]
+  },
+  {
+    "patch_dir": "03",
+    "date": "2026-07-29",
+    "message": "test: edge case tests for features and validator",
+    "files": [
+      {"src": "tests/__init__.py", "dst": "tests/__init__.py"},
+      {"src": "tests/test_features.py", "dst": "tests/test_features.py"},
+      {"src": "tests/test_validator.py", "dst": "tests/test_validator.py"}
+    ]
+  },
+  {
+    "patch_dir": "04",
+    "date": "2026-08-12",
+    "message": "feat: industry sector breakdown tab in dashboard",
+    "files": [{"src": "src/app.py", "dst": "src/app.py"}]
+  },
+  {
+    "patch_dir": "05",
+    "date": "2026-08-25",
+    "message": "docs: Altman Z-score thresholds interpretation in README",
+    "files": [{"src": "README.md", "dst": "README.md"}]
+  }
+]
