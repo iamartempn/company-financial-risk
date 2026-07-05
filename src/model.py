@@ -8,7 +8,7 @@ import logging
 import numpy as np
 import polars as pl
 import lightgbm as lgb
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
 from sklearn.metrics import classification_report
 
 logger = logging.getLogger(__name__)
@@ -48,6 +48,17 @@ def train(df: pl.DataFrame, model_path: str) -> None:
 
     X = pdf[available].values
     y = pdf["default"].values.astype(int)
+
+    # 5-fold cross-validation для оценки обобщающей способности
+    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    cv_model = lgb.LGBMClassifier(
+        n_estimators=300, learning_rate=0.05, max_depth=6,
+        num_leaves=31, min_child_samples=20, class_weight="balanced",
+        random_state=42, verbose=-1,
+    )
+    cv_scores = cross_val_score(cv_model, X, y, cv=kf, scoring="f1", n_jobs=-1)
+    print(f"CV F1: {cv_scores.mean():.3f} ± {cv_scores.std():.3f} "
+          f"(по {len(cv_scores)} фолдам)")
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
