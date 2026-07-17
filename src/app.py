@@ -194,22 +194,24 @@ def render_company_card(row: dict, model, df_full: pl.DataFrame) -> None:
         rl = row.get("risk_label", "Средний")
         st.plotly_chart(risk_gauge(float(rs), str(rl)), use_container_width=True)
 
-    if model is not None:
-        from src.explain import compute_shap, waterfall_fig
+    with st.expander("Вклад признаков (SHAP waterfall)", expanded=True):
+        if model is not None:
+            from src.explain import compute_shap, waterfall_fig
 
-        # Находим индекс записи в полном DataFrame
-        inn_list = df_full["inn"].to_list()
-        try:
-            idx = inn_list.index(row["inn"])
-        except ValueError:
-            idx = 0
+            # Находим индекс записи в полном DataFrame
+            inn_list = df_full["inn"].to_list()
+            try:
+                idx = inn_list.index(row["inn"])
+            except ValueError:
+                idx = 0
 
-        feature_cols = model["feature_cols"]
-        shap_values, _ = compute_shap(df_full, model)
+            feature_cols = model["feature_cols"]
+            shap_values, _ = compute_shap(df_full, model)
 
-        st.markdown("#### Вклад признаков (SHAP waterfall)")
-        fig = waterfall_fig(shap_values, idx, feature_cols)
-        st.plotly_chart(fig, use_container_width=True)
+            fig = waterfall_fig(shap_values, idx, feature_cols)
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("Модель не загружена. SHAP-объяснения недоступны.")
 
 
 def render_all_companies_tab(df: pl.DataFrame) -> None:
